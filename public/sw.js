@@ -42,6 +42,7 @@ self.addEventListener('activate', function(event){
 	return self.clients.claim();
 });
 
+// cache - network
 // self.addEventListener('fetch', function(event){
 // 	event.respondWith(
 // 		caches.match(event.request)
@@ -68,6 +69,23 @@ self.addEventListener('activate', function(event){
 // 	);
 // });
 
+// netwok -cache
+self.addEventListener('fetch', function(event){
+	event.respondWith(
+		fetch(event.request)
+		.then(function(res){
+			return caches.open(CACHE_DYNAMIC_NAME)
+				.then(function(cache){
+					cache.put(event.request.url, res.clone());
+					return res;
+				});
+		})
+		.catch(function(err){
+			return caches.match(event.request)
+		})
+	)
+});
+
 // Cache-only
 // self.addEventListener('fetch', function(event){
 // 	event.respondWith(
@@ -76,8 +94,8 @@ self.addEventListener('activate', function(event){
 // });
 
 // Network-only
-self.addEventListener('fetch', function(event){
-	event.respondWith(
-		fetch(event.request)
-	);
-});
+// self.addEventListener('fetch', function(event){
+// 	event.respondWith(
+// 		fetch(event.request)
+// 	);
+// });
