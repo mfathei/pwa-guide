@@ -1,12 +1,6 @@
 var CACHE_STATIC_NAME = 'static-v4';
 var CACHE_DYNAMIC_NAME = 'dynamic-v2';
-
-
-self.addEventListener('install', function(event){
-	console.log('[Service Worker] Installing service worker...', event);
-	event.waitUntil(caches.open(CACHE_STATIC_NAME).then(function(cache){
-			console.log('[Service Worker] Precaching the App Shell...');
-			cache.addAll([
+var STATIC_FILES = [
 				'/',
 				'/index.html',
 				'/offline.html',
@@ -21,7 +15,23 @@ self.addEventListener('install', function(event){
 				"https://fonts.googleapis.com/css?family=Roboto:400,700",
 				"https://fonts.googleapis.com/icon?family=Material+Icons",
 				"https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css"
-			]);
+			];
+
+function isInArray(string, arr){
+	for(i = 0; i < arr.length; i++){
+		if(string === arr[i]){
+			return true;
+		}
+	}
+
+	return false;
+}
+
+self.addEventListener('install', function(event){
+	console.log('[Service Worker] Installing service worker...', event);
+	event.waitUntil(caches.open(CACHE_STATIC_NAME).then(function(cache){
+			console.log('[Service Worker] Precaching the App Shell...');
+			cache.addAll(STATIC_FILES);
 		})
 	);
 });
@@ -82,6 +92,11 @@ self.addEventListener('fetch', function(event){
 				})
 			})
 		);
+	} else if (isInArray(event.request.url, STATIC_FILES)){
+		console.log(event.request.url);
+		event.respondWith(
+			caches.match(event.request)
+		);
 	} else {
 		event.respondWith(
 			caches.match(event.request)
@@ -101,7 +116,9 @@ self.addEventListener('fetch', function(event){
 			 	.catch(function(err){
 			 		return caches.open(CACHE_STATIC_NAME)
 			 		.then(function(cache){
-			 			return cache.match('/offline.html');
+			 			if(event.request.url.indexOf('/help')){
+			 				return cache.match('/offline.html');
+			 			}
 			 		});
 			 	});
 			 })
