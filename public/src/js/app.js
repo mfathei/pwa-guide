@@ -7,6 +7,20 @@ if('serviceWorker' in navigator){
 	});
 }
 
+// xhr
+var xhr = new XMLHttpRequest();
+xhr.open('GET', 'https://httpbin.org/ip');
+xhr.responseType = 'json';
+xhr.onload = function(){
+	console.log(xhr.response);
+}
+
+xhr.onerror = function(){
+	console.log(err);
+}
+
+xhr.send();
+
 // GET
 fetch('https://httpbin.org/ip').
 then(function(response){
