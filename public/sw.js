@@ -1,4 +1,3 @@
-var defferedPrompt;
 
 self.addEventListener('install', function(event){
 	console.log('[Service Worker] Installing service worker...', event);
