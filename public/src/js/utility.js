@@ -9,7 +9,7 @@ function writeData(st, data){
 		function(db){
 			var tx = db.transaction('posts', 'readwrite');
 			var store = tx.objectStore('posts');
-			store.put(data[key]);
+			store.put(data);
 			return tx.complete;
 		});
 }
