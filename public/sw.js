@@ -107,10 +107,7 @@ self.addEventListener('fetch', function(event){
 					return clonedRes.json();
 				}).then(function(data){
 					for(var key in data){
-						writeData('posts', data[key])
-						.then(function(){
-							daleteDataItem('posts', key);
-						});
+						writeData('posts', data[key]);
 					}
 				});
 
