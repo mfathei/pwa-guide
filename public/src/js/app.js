@@ -13,44 +13,9 @@ if('serviceWorker' in navigator){
 	});
 }
 
-// xhr
-var xhr = new XMLHttpRequest();
-xhr.open('GET', 'https://httpbin.org/ip');
-xhr.responseType = 'json';
-xhr.onload = function(){
-	console.log(xhr.response);
-}
-
-xhr.onerror = function(){
-	console.log(err);
-}
-
-xhr.send();
-
-// GET
-fetch('https://httpbin.org/ip').
-then(function(response){
-	return response.json();
-}).then(function(data){
-	console.log(data);
-}).catch(function(err){
-	console.log(err);
-});
-
-// POST
-fetch('https://httpbin.org/post', {
-	method: 'POST',
-	headers: {
-		'Content-type': 'application/json',
-		'Accept': 'application/json',
-	},
-	mode: "cors",
-	body: JSON.stringify({message: "This works."})
-}).
-then(function(response){
-	return response.json();
-}).then(function(data){
-	console.log(data);
-}).catch(function(err){
-	console.log(err);
+window.addEventListener('beforeinstallprompt', function(event){
+	console.log('beforeinstallprompt fired');
+	event.preventDefault();
+	defferedPrompt = event;
+	return false;
 });
