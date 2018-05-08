@@ -18,7 +18,7 @@ var STATIC_FILES = [
 			];
 
 function isInArray(string, arr){
-	for(i = 0; i < arr.length; i++){
+	for(var i = 0; i < arr.length; i++){
 		if(string === arr[i]){
 			return true;
 		}
