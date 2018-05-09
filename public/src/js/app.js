@@ -76,7 +76,7 @@ function configurePushSub(){
 				"Content-Type": "application/json",
 				"Accept": "application/json"
 			},
-			body: JSON.stringify({newSub})
+			body: JSON.stringify(newSub)
 		});
 	})
 	.then(function(res){
