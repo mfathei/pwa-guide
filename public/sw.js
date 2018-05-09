@@ -179,3 +179,41 @@ self.addEventListener('fetch', function(event){
 // 		fetch(event.request)
 // 	);
 // });
+
+
+self.addEventListener('sync', function(event){
+	console.log('[Service Worker] Syncing  data')
+	if(event.tag === 'sync-new-posts'){
+		console.log('sync new posts');
+		var url = 'https://pwa-guide.firebaseio.com/posts.json';
+		event.waitUntil(
+			readAllData('sync-posts')
+			.then(function(data){
+				for(var dt of data){
+					fetch(url, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							'Accept': 'application/json'
+						},
+						body: JSON.stringify({
+							id: dt.id,
+							title: dt.title,
+							location: dt.location,
+							image: 'https://firebasestorage.googleapis.com/v0/b/pwa-guide.appspot.com/o/sf-boat.jpg?alt=media&token=a1577688-d778-48b6-813b-9773e8c1a1d3'
+						})
+					})
+					.then(function(res){
+						console.log('Data sent to server', res);
+						if(res.ok){
+							daleteDataItem('sync-posts', dt.id);
+						}
+					}); 
+				}
+			})
+			.catch(function(err){
+				console.log(err);
+			})
+		);
+	}
+});
