@@ -22,11 +22,16 @@ window.addEventListener('beforeinstallprompt', function(event){
 });
 
 function displayConfirmNotification(){
-	var options = {
-		body: 'You Successfully Subscribed to our Notifications system'
-	};
+	if('serviceWorker' in navigator){
+		var options = {
+			body: 'You Successfully Subscribed to our Notifications system'
+		};
+		navigator.serviceWorker.ready
+		.then(function(swreg){
+			swreg.showNotification('Successfully Subscribed', options);
+		});
+	}
 
-	new Notification('Successfully Subscribed', options);
 }
 
 function askForNotificationPermission(){
