@@ -181,3 +181,4 @@ form.addEventListener('submit', function(event){
 
 	closeCreatePostModal();
 });
+
