@@ -46,6 +46,47 @@ function displayConfirmNotification(){
 
 }
 
+var reg;
+function configurePushSub(){
+	if(!('serviceWorker' in navigator)){
+		return;
+	}
+
+	navigator.serviceWorker.ready
+	.then(function(swreg){
+		reg = swreg;
+		return swreg.pushManager.getSubscription();
+	})
+	.then(function(sub){
+		if(!sub){
+			var vapidPublicKey = 'BN1XjQM4LUPE8vFtK264qjiJEIHrh_SkkUGjw6GuHDdmEOUN3nC_mLgBWVlgViOr2HmcFGR0J-J01Aw7liu0mnY'
+			var convertedVapidPublicKey = urlBase64ToUint8Array(vapidPublicKey);
+			return reg.pushManager.subscribe({
+				userVisibleOnly: true,
+				applicationServerKey: convertedVapidPublicKey
+			});
+		} else {
+			// we have a Subscriptions
+		}
+	})
+	.then(function(newSub){
+		return fetch('https://pwa-guide.firebaseio.com/subscriptions.json', {
+			method: 'POST',
+			headers: {
+				"Content-Type": "application/json",
+				"Accept": "application/json"
+			},
+			body: JSON.stringify({newSub})
+		});
+	})
+	.then(function(res){
+		displayConfirmNotification();
+	})
+	.catch(function(err){
+		console.log(err);
+	});
+}
+
 function askForNotificationPermission(){
 	var result = Notification.requestPermission(function(result){
 		console.log('User Choice', result);
@@ -53,12 +94,12 @@ function askForNotificationPermission(){
 			console.log('No notification permission', result);
 		} else {
 			// hide button
-			displayConfirmNotification();
+			configurePushSub();
 		}
 	});
 }
 
-if('Notification' in window){
+if('Notification' in window && 'serviceWorker' in navigator){
 	for(var i = 0;i < notificationButtons.length; i++){
 		notificationButtons[i].style.display = 'inline-block';
 		notificationButtons[i].addEventListener('click', askForNotificationPermission);
