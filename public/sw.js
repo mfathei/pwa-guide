@@ -96,7 +96,7 @@ self.addEventListener('activate', function(event){
 // });
 
 self.addEventListener('fetch', function(event){
-	var url = 'https://pwa-guide.firebaseio.com/posts.json';
+	var url = 'https://pwa-guide.firebaseio.com/posts.json';// get request
 	if(event.request.url.indexOf(url) > -1){
 		event.respondWith(
 			fetch(event.request)
@@ -185,7 +185,7 @@ self.addEventListener('sync', function(event){
 	console.log('[Service Worker] Syncing  data')
 	if(event.tag === 'sync-new-posts'){
 		console.log('sync new posts');
-		var url = 'https://pwa-guide.firebaseio.com/posts.json';
+		var url = 'https://us-central1-pwa-guide.cloudfunctions.net/storePostData';
 		event.waitUntil(
 			readAllData('sync-posts')
 			.then(function(data){
@@ -206,7 +206,10 @@ self.addEventListener('sync', function(event){
 					.then(function(res){
 						console.log('Data sent to server', res);
 						if(res.ok){
-							daleteDataItem('sync-posts', dt.id);
+							res.json()
+							.then(function(dataArr){
+								daleteDataItem('sync-posts', dataArr.id);
+							})
 						}
 					}); 
 				}

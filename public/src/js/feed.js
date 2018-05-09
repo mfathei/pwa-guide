@@ -95,7 +95,7 @@ function createCard(data) {
   sharedMomentsArea.appendChild(cardWrapper);
 }
 
-var url = 'https://pwa-guide.firebaseio.com/posts.json';
+var url = 'https://pwa-guide.firebaseio.com/posts.json';// get request
 var networkDataReceived = false;
 
 fetch(url)
@@ -114,6 +114,7 @@ fetch(url)
   });
 
 function sendData(){
+	var url = 'https://us-central1-pwa-guide.cloudfunctions.net/storePostData';
 	fetch(url, {
 		method: 'POST',
 		headers: {
