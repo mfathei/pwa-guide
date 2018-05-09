@@ -33,7 +33,7 @@ function openCreatePostModal() {
 
 function closeCreatePostModal() {
   createPostArea.style.transform = 'translateY(100vh)';
-  // createPostArea.style.display = 'none';
+  // createPostArea.style.display = 'none'; 
 }
 
 shareImageButton.addEventListener('click', openCreatePostModal);
