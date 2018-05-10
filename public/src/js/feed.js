@@ -6,9 +6,10 @@ var form = document.querySelector('form');
 var titleInput = document.querySelector('#title');
 var locationInput = document.querySelector('#location');
 var videoPlayer = document.querySelector('#player');
-var canvaElement = document.querySelector('#canvas');
+var canvasElement = document.querySelector('#canvas');
 var imagePicker = document.querySelector('#image-picker');
 var imagePickerArea = document.querySelector('#pick-image');
+var captureButton = document.querySelector('#capture-btn');
 
 function initializeMedia(){
 	if(!('mediaDevices' in navigator)){
@@ -38,6 +39,17 @@ function initializeMedia(){
 		imagePickerArea.style.display = 'block';
 	});
 }
+
+captureButton.addEventListener('click', function(event){
+	canvasElement.style.display = 'block';
+	videoPlayer.style.display = 'none';
+	captureButton.style.display = 'none';
+	var context = canvasElement.getContext('2d');
+	context.drawImage(videoPlayer, 0, 0, canvasElement.width, videoPlayer.videoHeight / (videoPlayer.videoWidth / canvasElement.width));
+	videoPlayer.srcObject.getVideoTracks().forEach(function(track){
+		track.stop();
+	});
+});
 
 function openCreatePostModal() {
   createPostArea.style.display = 'block';
@@ -74,7 +86,7 @@ function closeCreatePostModal() {
   createPostArea.style.transform = 'translateY(100vh)';
   imagePickerArea.style.display = 'none';
   videoPlayer.style.display = 'none';
-  canvaElement.style.display = 'none';
+  canvasElement.style.display = 'none';
   // createPostArea.style.display = 'none'; 
 }
 
