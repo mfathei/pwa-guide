@@ -238,10 +238,10 @@ self.addEventListener('notificationclick', function(event){
 				});
 
 				if(client){
-					client.navigate('http://127.0.0.1:8080');
+					client.navigate(notification.data.url);
 					client.focus();
 				} else {
-					clients.openWindow('http://127.0.0.1:8080');
+					clients.openWindow(notification.data.url);
 				}
 			})
 		);
@@ -256,7 +256,7 @@ self.addEventListener('notificationclose', function(event){
 self.addEventListener('push', function(event){
 	console.log('Push notification received', event);
 
-	var data = {title: "New!", content: "New content"};
+	var data = {title: "New!", content: "New content", url: '/'};
 
 	if(event.data){
 		data = JSON.parse(event.data.text());
@@ -265,7 +265,10 @@ self.addEventListener('push', function(event){
 	var options = {
 		body: data.content,
 		icon: '/src/images/icons/app-icon-96x96.png',
-		badge: '/src/images/icons/app-icon-96x96.png'
+		badge: '/src/images/icons/app-icon-96x96.png',
+		data: {
+			url: data.openUrl
+		}
 	}
 
 	event.waitUntil(
