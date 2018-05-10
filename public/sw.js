@@ -230,6 +230,21 @@ self.addEventListener('notificationclick', function(event){
 		notification.close();
 	} else {
 		console.log(action);
+		event.waitUntil(
+			clients.matchAll()
+			.then(function(clis){
+				var client = clis.find(function(c){
+					return c.visibilityState === 'visible';
+				});
+
+				if(client){
+					client.navigate('http://127.0.0.1:8080');
+					client.focus();
+				} else {
+					clients.openWindow('http://127.0.0.1:8080');
+				}
+			})
+		);
 		notification.close();
 	}
 });
