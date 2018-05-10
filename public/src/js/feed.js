@@ -10,6 +10,7 @@ var canvasElement = document.querySelector('#canvas');
 var imagePicker = document.querySelector('#image-picker');
 var imagePickerArea = document.querySelector('#pick-image');
 var captureButton = document.querySelector('#capture-btn');
+var picture;
 
 function initializeMedia(){
 	if(!('mediaDevices' in navigator)){
@@ -49,6 +50,8 @@ captureButton.addEventListener('click', function(event){
 	videoPlayer.srcObject.getVideoTracks().forEach(function(track){
 		track.stop();
 	});
+
+	picture = dataURItoBlob(canvasElement.toDataURL());
 });
 
 function openCreatePostModal() {
@@ -166,18 +169,15 @@ fetch(url)
 
 function sendData(){
 	var url = 'https://us-central1-pwa-guide.cloudfunctions.net/storePostData';
+	var id = new Date().toISOString();
+	var postData = new FormData();
+	postData.append('id', id);
+	postData.append('title', title);
+	postData.append('location', location);
+	postData.append('file', picture, id + '.png');
 	fetch(url, {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'Accept': 'application/json'
-		},
-		body: JSON.stringify({
-			id: new Date().toISOString(),
-			title: titleInput.value,
-			location: locationInput.value,
-			image: 'https://firebasestorage.googleapis.com/v0/b/pwa-guide.appspot.com/o/sf-boat.jpg?alt=media&token=a1577688-d778-48b6-813b-9773e8c1a1d3'
-		})
+		body: postData
 	})
 	.then(function(res){
 		console.log('Data sent to server', res);
@@ -209,7 +209,8 @@ form.addEventListener('submit', function(event){
 			var post = {
 				id: new Date().toISOString(),
 				title: titleInput.value,
-				location: locationInput.value
+				location: locationInput.value,
+				picture: picture
 			};
 
 			writeData('sync-posts', post)
