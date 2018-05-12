@@ -29,10 +29,11 @@ admin.initializeApp({
 
 
 exports.storePostData = functions.https.onRequest(function(request, response) {
-    cors(request, response, function() {
+    return cors(request, response, function() {
         var uuid = UUID();
         var formData = new formidable.IncomingForm();
         formData.parse(request, function(err, fields, files) {
+        	console.log('files: ', files);
             fs.rename(files.file.path, '/tmp/' + files.file.name);
             var bucket = gcs.bucket('pwa-guide.appspot.com');
 
