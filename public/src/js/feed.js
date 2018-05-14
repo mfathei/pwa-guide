@@ -37,7 +37,8 @@ function initializeMedia() {
         })
         .then(function (stream) {
             videoPlayer.srcObject = stream;
-            videoPlayer.style.display = 'block';
+            // videoPlayer.style.display = 'block';
+            imagePickerArea.style.display = 'block';
         })
         .catch(function (err) {
             imagePickerArea.style.display = 'block';
@@ -54,6 +55,10 @@ captureButton.addEventListener('click', function (event) {
         track.stop();
     });
     picture = dataURItoBlob(canvasElement.toDataURL());
+});
+
+imagePicker.addEventListener('change', function (event) {
+    picture = event.target.files[0];
 });
 
 function openCreatePostModal() {

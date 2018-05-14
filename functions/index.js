@@ -29,7 +29,7 @@ admin.initializeApp({
 
 
 exports.storePostData = functions.https.onRequest(function(request, response) {
-    return cors(request, response, function() {
+    cors(request, response, function() {
         var uuid = UUID();
         var formData = new formidable.IncomingForm();
         formData.parse(request, function(err, fields, files) {
