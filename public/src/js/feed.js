@@ -33,8 +33,8 @@ function initializeMedia() {
     }
 
     navigator.mediaDevices.getUserMedia({
-            video: true
-        })
+        video: true
+    })
         .then(function (stream) {
             videoPlayer.srcObject = stream;
             // videoPlayer.style.display = 'block';
@@ -158,7 +158,8 @@ function createCard(data) {
     sharedMomentsArea.appendChild(cardWrapper);
 }
 
-var url = 'https://pwa-guide.firebaseio.com/posts.json'; // get request
+// var url = 'https://pwa-guide.firebaseio.com/posts.json'; // get request
+var url = 'http://localhost:3000/api/posts'; // get request
 var networkDataReceived = false;
 
 fetch(url)
@@ -177,21 +178,22 @@ fetch(url)
     });
 
 function sendData() {
-    var url = 'https://us-central1-pwa-guide.cloudfunctions.net/storePostData';
+    // var url = 'https://us-central1-pwa-guide.cloudfunctions.net/storePostData';
+    var url = 'http://localhost:3000/api/posts';
     var id = new Date().toISOString();
     var postData = new FormData();
-    postData.append('id', id);
+    // postData.append('id', id);
     postData.append('title', titleInput.value);
     postData.append('location', locationInput.value);
     postData.append('file', picture, id + '.png');
     fetch(url, {
-            method: 'POST',
-            body: postData
-        })
-        .then(function (res) {
-            console.log('Data sent to server', res);
-            updateUI();
-        });
+        method: 'POST',
+        body: postData
+    })
+    .then(function (res) {
+        console.log('Data sent to server', res);
+        updateUI();
+    });
 }
 
 if ('indexedDB' in window) {

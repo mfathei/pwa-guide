@@ -1,7 +1,7 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/utility.js');
-var CACHE_STATIC_NAME = 'static-v12';
-var CACHE_DYNAMIC_NAME = 'dynamic-v12';
+var CACHE_STATIC_NAME = 'static-v1';
+var CACHE_DYNAMIC_NAME = 'dynamic-v1';
 var STATIC_FILES = [
     '/',
     '/index.html',
@@ -49,10 +49,10 @@ self.addEventListener('install', function (event) {
     console.log('[Service Worker] Installing service worker...', event);
     event.waitUntil(
         caches.open(CACHE_STATIC_NAME)
-        .then(function (cache) {
-            console.log('[Service Worker] Precaching the App Shell...');
-            cache.addAll(STATIC_FILES);
-        })
+            .then(function (cache) {
+                console.log('[Service Worker] Precaching the App Shell...');
+                cache.addAll(STATIC_FILES);
+            })
     );
 });
 
@@ -60,14 +60,14 @@ self.addEventListener('activate', function (event) {
     console.log('[Service Worker] Activating service worker...');
     event.waitUntil(
         caches.keys()
-        .then(function (keyList) {
-            return Promise.all(keyList.map(function (key) {
-                if (key !== CACHE_STATIC_NAME && key !== CACHE_DYNAMIC_NAME) {
-                    console.log('[Service Worker] Deleting old cache ', key);
-                    return caches.delete(key);
-                }
-            }));
-        })
+            .then(function (keyList) {
+                return Promise.all(keyList.map(function (key) {
+                    if (key !== CACHE_STATIC_NAME && key !== CACHE_DYNAMIC_NAME) {
+                        console.log('[Service Worker] Deleting old cache ', key);
+                        return caches.delete(key);
+                    }
+                }));
+            })
     );
     return self.clients.claim();
 });
@@ -100,24 +100,25 @@ self.addEventListener('activate', function (event) {
 // });
 
 self.addEventListener('fetch', function (event) {
-    var url = 'https://pwa-guide.firebaseio.com/posts.json'; // get request
+    // var url = 'https://pwa-guide.firebaseio.com/posts.json'; // get request
+    var url = 'http://localhost:3000/api/posts'; // get request
     if (event.request.url.indexOf(url) > -1) {
         event.respondWith(
             fetch(event.request)
-            .then(function (res) {
-                var clonedRes = res.clone();
-                clearAllData('posts')
-                    .then(function () {
-                        return clonedRes.json();
-                    })
-                    .then(function (data) {
-                        for (var key in data) {
-                            writeData('posts', data[key]);
-                        }
-                    });
+                .then(function (res) {
+                    var clonedRes = res.clone();
+                    clearAllData('posts')
+                        .then(function () {
+                            return clonedRes.json();
+                        })
+                        .then(function (data) {
+                            for (var key in data) {
+                                writeData('posts', data[key]);
+                            }
+                        });
 
-                return res;
-            })
+                    return res;
+                })
         );
     } else if (isInArray(event.request.url, STATIC_FILES)) {
         console.log(event.request.url);
@@ -127,29 +128,29 @@ self.addEventListener('fetch', function (event) {
     } else {
         event.respondWith(
             caches.match(event.request)
-            .then(function (response) {
-                if (response) {
-                    return response;
-                }
+                .then(function (response) {
+                    if (response) {
+                        return response;
+                    }
 
-                return fetch(event.request)
-                    .then(function (res) {
-                        return caches.open(CACHE_DYNAMIC_NAME)
-                            .then(function (cache) {
-                                // trimCache(CACHE_DYNAMIC_NAME, 3);
-                                cache.put(event.request.url, res.clone());
-                                return res;
-                            })
-                    })
-                    .catch(function (err) {
-                        return caches.open(CACHE_STATIC_NAME)
-                            .then(function (cache) {
-                                if (event.request.headers.get('accept').includes('text/html')) {
-                                    return cache.match('/offline.html');
-                                }
-                            });
-                    });
-            })
+                    return fetch(event.request)
+                        .then(function (res) {
+                            return caches.open(CACHE_DYNAMIC_NAME)
+                                .then(function (cache) {
+                                    // trimCache(CACHE_DYNAMIC_NAME, 3);
+                                    cache.put(event.request.url, res.clone());
+                                    return res;
+                                })
+                        })
+                        .catch(function (err) {
+                            return caches.open(CACHE_STATIC_NAME)
+                                .then(function (cache) {
+                                    if (event.request.headers.get('accept').includes('text/html')) {
+                                        return cache.match('/offline.html');
+                                    }
+                                });
+                        });
+                })
         );
     }
 });
@@ -192,33 +193,33 @@ self.addEventListener('sync', function (event) {
         console.log('[Service Worker] Syncing new Posts');
         event.waitUntil(
             readAllData('sync-posts')
-            .then(function (data) {
-                for (var dt of data) {
-                    var postData = new FormData();
-                    postData.append('id', dt.id);
-                    postData.append('title', dt.title);
-                    postData.append('location', dt.location);
-                    postData.append('file', dt.picture, dt.id + '.png');
+                .then(function (data) {
+                    for (var dt of data) {
+                        var postData = new FormData();
+                        postData.append('id', dt.id);
+                        postData.append('title', dt.title);
+                        postData.append('location', dt.location);
+                        postData.append('file', dt.picture, dt.id + '.png');
 
-                    fetch('https://us-central1-pwa-guide.cloudfunctions.net/storePostData', {
+                        fetch('http://localhost:3000/api/posts', {
                             method: 'POST',
                             body: postData
                         })
-                        .then(function (res) {
-                            console.log('Sent data', res);
-                            if (res.ok) {
-                                res.json()
-                                    .then(function (resData) {
-                                        deleteItemFromData('sync-posts', resData.id);
-                                    });
-                            }
-                        })
-                        .catch(function (err) {
-                            console.log('Error while sending data', err);
-                        });
-                }
+                            .then(function (res) {
+                                console.log('Sent data', res);
+                                if (res.ok) {
+                                    res.json()
+                                        .then(function (resData) {
+                                            daleteDataItem('sync-posts', resData.id);
+                                        });
+                                }
+                            })
+                            .catch(function (err) {
+                                console.log('Error while sending data', err);
+                            });
+                    }
 
-            })
+                })
         );
     }
 });
@@ -234,19 +235,19 @@ self.addEventListener('notificationclick', function (event) {
         console.log(action);
         event.waitUntil(
             clients.matchAll()
-            .then(function (clis) {
-                var client = clis.find(function (c) {
-                    return c.visibilityState === 'visible';
-                });
+                .then(function (clis) {
+                    var client = clis.find(function (c) {
+                        return c.visibilityState === 'visible';
+                    });
 
-                if (client) {
-                    client.navigate(notification.data.url);
-                    client.focus();
-                } else {
-                    clients.openWindow(notification.data.url);
-                }
-                notification.close();
-            })
+                    if (client) {
+                        client.navigate(notification.data.url);
+                        client.focus();
+                    } else {
+                        clients.openWindow(notification.data.url);
+                    }
+                    notification.close();
+                })
         );
     }
 });
