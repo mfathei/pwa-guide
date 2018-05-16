@@ -75,11 +75,13 @@ function configurePushSub() {
                     applicationServerKey: convertedVapidPublicKey
                 });
             } else {
-                // we have a Subscriptions
+                // we have a Subscription
+                console.log('we have a Subscription')
             }
         })
         .then(function (newSub) {
             // var url = 'https://pwa-guide.firebaseio.com/subscriptions.json';
+            console.log(newSub);
             var url = 'http://localhost:3000/api/subscriptions';
             return fetch(url, {
                 method: 'POST',
