@@ -50,7 +50,7 @@ captureButton.addEventListener('click', function (event) {
     videoPlayer.style.display = 'none';
     captureButton.style.display = 'none';
     var context = canvasElement.getContext('2d');
-    context.drawImage(videoPlayer, 0, 0, canvas.width, videoPlayer.videoHeight / (videoPlayer.videoWidth / canvas.width));
+    context.drawImage(videoPlayer, 0, 0, canvasElement.width, videoPlayer.videoHeight / (videoPlayer.videoWidth / canvasElement.width));
     videoPlayer.srcObject.getVideoTracks().forEach(function (track) {
         track.stop();
     });
@@ -130,6 +130,9 @@ function updateUI(dataArray) {
         createCard(dataArray[i]);
     }
 }
+
+// path in api code pwa-api
+// var imagePath = '/mnt/f/PROGRAMMING/Progressive web apps/WORK/pwa-guide/public/upload/photos/';
 
 function createCard(data) {
     var cardWrapper = document.createElement('div');

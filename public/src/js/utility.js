@@ -37,7 +37,7 @@ function clearAllData(st){
 	});
 }
 
-function daleteDataItem(st, id){
+function deleteDataItem(st, id){
 	dbPromise.then(function(db){
 		var tx = db.transaction(st, 'readwrite');
 		var store = tx.objectStore(st);

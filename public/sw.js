@@ -1,7 +1,7 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/utility.js');
-var CACHE_STATIC_NAME = 'static-v1';
-var CACHE_DYNAMIC_NAME = 'dynamic-v1';
+var CACHE_STATIC_NAME = 'static-v133';
+var CACHE_DYNAMIC_NAME = 'dynamic-v13';
 var STATIC_FILES = [
     '/',
     '/index.html',
@@ -194,6 +194,7 @@ self.addEventListener('sync', function (event) {
         event.waitUntil(
             readAllData('sync-posts')
                 .then(function (data) {
+                    console.log('sync-posts');
                     for (var dt of data) {
                         var postData = new FormData();
                         postData.append('id', dt.id);
@@ -210,7 +211,7 @@ self.addEventListener('sync', function (event) {
                                 if (res.ok) {
                                     res.json()
                                         .then(function (resData) {
-                                            daleteDataItem('sync-posts', resData.id);
+                                            deleteDataItem('sync-posts', resData.id);
                                         });
                                 }
                             })

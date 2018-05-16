@@ -79,7 +79,9 @@ function configurePushSub() {
             }
         })
         .then(function (newSub) {
-            return fetch('https://pwa-guide.firebaseio.com/subscriptions.json', {
+            // var url = 'https://pwa-guide.firebaseio.com/subscriptions.json';
+            var url = 'http://localhost:3000/api/subscriptions';
+            return fetch(url, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
