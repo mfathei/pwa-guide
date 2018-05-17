@@ -45,16 +45,16 @@ function initializeMedia() {
         });
 }
 
-captureButton.addEventListener('click', function (event) {
-    canvasElement.style.display = 'block';
-    videoPlayer.style.display = 'none';
-    captureButton.style.display = 'none';
-    var context = canvasElement.getContext('2d');
-    context.drawImage(videoPlayer, 0, 0, canvasElement.width, videoPlayer.videoHeight / (videoPlayer.videoWidth / canvasElement.width));
-    videoPlayer.srcObject.getVideoTracks().forEach(function (track) {
-        track.stop();
-    });
-    picture = dataURItoBlob(canvasElement.toDataURL());
+captureButton.addEventListener('click', function(event) {
+  canvasElement.style.display = 'block';
+  videoPlayer.style.display = 'none';
+  captureButton.style.display = 'none';
+  var context = canvasElement.getContext('2d');
+  context.drawImage(videoPlayer, 0, 0, canvas.width, videoPlayer.videoHeight / (videoPlayer.videoWidth / canvas.width));
+  videoPlayer.srcObject.getVideoTracks().forEach(function(track) {
+    track.stop();
+  });
+  picture = dataURItoBlob(canvasElement.toDataURL());
 });
 
 imagePicker.addEventListener('change', function (event) {
