@@ -4,7 +4,15 @@ workbox.precaching.suppressWarnings();
 
 workbox.routing.registerRoute(/.*(?:googleapis|gstatic)\.com.*$/,
     workbox.strategies.staleWhileRevalidate({
-        cacheName: 'google-fonts'
+        cacheName: 'google-fonts',
+        plugins: [
+          new workbox.expiration.Plugin({
+            // Only cache requests for a week
+            maxAgeSeconds: 7 * 24 * 60 * 60,
+            // Only cache 3 requests.
+            maxEntries: 3,
+          }),
+        ]
     })
 );
 
@@ -83,7 +91,7 @@ workbox.precaching.precacheAndRoute([
   },
   {
     "url": "sw-base.js",
-    "revision": "3b34e2237eb420551ff27b01d971f97d"
+    "revision": "46fb2c8e3b24c9980ba53d2397519625"
   },
   {
     "url": "sw.js",

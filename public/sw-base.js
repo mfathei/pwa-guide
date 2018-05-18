@@ -5,10 +5,14 @@ workbox.precaching.suppressWarnings();
 workbox.routing.registerRoute(/.*(?:googleapis|gstatic)\.com.*$/,
     workbox.strategies.staleWhileRevalidate({
         cacheName: 'google-fonts',
-        cacheExpiration: {
+        plugins: [
+          new workbox.expiration.Plugin({
+            // Only cache requests for a week
+            maxAgeSeconds: 7 * 24 * 60 * 60,
+            // Only cache 3 requests.
             maxEntries: 3,
-            maxAgeSeconds: 60 * 60 * 24 * 30
-        }
+          }),
+        ]
     })
 );
 
