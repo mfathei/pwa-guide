@@ -111,7 +111,7 @@ function openCreatePostModal() {
         deferredPrompt.prompt();
 
         deferredPrompt.userChoice.then(function (choiceResult) {
-            console.log(choiceResult.outcome);
+            // console.log(choiceResult.outcome);
 
             if (choiceResult.outcome === 'dismissed') {
                 console.log('user cancelled installation');
@@ -158,7 +158,7 @@ closeCreatePostModalButton.addEventListener('click', closeCreatePostModal);
 
 // enable cache on demand
 function onSaveButtonClicked(event) {
-    console.log('clicked!');
+    // console.log('clicked!');
     if ('caches' in window) {
         caches.open('user-requested')
             .then(function (cache) {
