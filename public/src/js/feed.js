@@ -74,8 +74,8 @@ function initializeMedia() {
     })
         .then(function (stream) {
             videoPlayer.srcObject = stream;
-            // videoPlayer.style.display = 'block';
-            imagePickerArea.style.display = 'block';
+            videoPlayer.style.display = 'block';
+            imagePickerArea.style.display = 'none';
         })
         .catch(function (err) {
             imagePickerArea.style.display = 'block';
@@ -87,7 +87,7 @@ captureButton.addEventListener('click', function(event) {
   videoPlayer.style.display = 'none';
   captureButton.style.display = 'none';
   var context = canvasElement.getContext('2d');
-  context.drawImage(videoPlayer, 0, 0, canvas.width, videoPlayer.videoHeight / (videoPlayer.videoWidth / canvas.width));
+  context.drawImage(videoPlayer, 0, 0, canvasElement.width, videoPlayer.videoHeight / (videoPlayer.videoWidth / canvasElement.width));
   videoPlayer.srcObject.getVideoTracks().forEach(function(track) {
     track.stop();
   });
