@@ -6,7 +6,7 @@
   "scripts": {
     "start": "http-server -c-1",
     "wizard": "workbox wizard",
-    "generate-sw": "workbox generateSW workbox-config.js",
+    "generate-sw": "workbox injectManifest workbox-config.js",
     "dev": "lite-server"
   },
   "keywords": [
