@@ -48,6 +48,33 @@ workbox.routing.registerRoute('http://localhost:3000/api/posts', function(args) 
         });
 });
 
+workbox.routing.registerRoute(function(routeData) {
+    return (routeData.event.request.headers.get('accept').includes('text/html'));
+}, function(args) {
+    return caches.match(args.event.request)
+        .then(function(response) {
+            if (response) {
+                return response;
+            }
+
+            return fetch(args.event.request)
+                .then(function(res) {
+                    return caches.open('dynamic')
+                        .then(function(cache) {
+                            // trimCache(CACHE_DYNAMIC_NAME, 3);
+                            cache.put(args.event.request.url, res.clone());
+                            return res;
+                        })
+                })
+                .catch(function(err) {
+                    return caches.match('/offline.html')
+                        .then(function(cache) {
+                            return cache
+                        });
+                });
+        });
+});
+
 workbox.precaching.precacheAndRoute([
   {
     "url": "404.html",
@@ -111,7 +138,7 @@ workbox.precaching.precacheAndRoute([
   },
   {
     "url": "sw-base.js",
-    "revision": "fe69ff0e4c718fe6d0b5b4b243f6f942"
+    "revision": "bb49bf90f668820227dafb6eb40098e4"
   },
   {
     "url": "sw.js",
