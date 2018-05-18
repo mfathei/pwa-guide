@@ -1,4 +1,6 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.2.0/workbox-sw.js");
+importScripts('/src/js/idb.js');
+importScripts('/src/js/utility.js');
 
 workbox.precaching.suppressWarnings();
 
@@ -6,12 +8,12 @@ workbox.routing.registerRoute(/.*(?:googleapis|gstatic)\.com.*$/,
     workbox.strategies.staleWhileRevalidate({
         cacheName: 'google-fonts',
         plugins: [
-          new workbox.expiration.Plugin({
-            // Only cache requests for a week
-            maxAgeSeconds: 7 * 24 * 60 * 60,
-            // Only cache 3 requests.
-            maxEntries: 3,
-          }),
+            new workbox.expiration.Plugin({
+                // Only cache requests for a week
+                maxAgeSeconds: 7 * 24 * 60 * 60,
+                // Only cache 3 requests.
+                maxEntries: 3,
+            }),
         ]
     })
 );
@@ -27,6 +29,24 @@ workbox.routing.registerRoute(new RegExp('/photos/'),
         cacheName: 'post-images'
     })
 );
+
+workbox.routing.registerRoute('http://localhost:3000/api/posts', function(args) {
+    return fetch(args.event.request)
+        .then(function(res) {
+            var clonedRes = res.clone();
+            clearAllData('posts')
+                .then(function() {
+                    return clonedRes.json();
+                })
+                .then(function(data) {
+                    for (var key in data) {
+                        writeData('posts', data[key]);
+                    }
+                });
+
+            return res;
+        });
+});
 
 workbox.precaching.precacheAndRoute([
   {
@@ -91,7 +111,7 @@ workbox.precaching.precacheAndRoute([
   },
   {
     "url": "sw-base.js",
-    "revision": "46fb2c8e3b24c9980ba53d2397519625"
+    "revision": "fe69ff0e4c718fe6d0b5b4b243f6f942"
   },
   {
     "url": "sw.js",
